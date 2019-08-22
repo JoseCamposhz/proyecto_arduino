@@ -14,7 +14,7 @@ int value;                      // Variable que almacenará los valores del foto
 #define GREEN 5
 #define RED 6
 
-#define ENABLE 13
+#define ENABLE 4
 
 void setup() {
   lcd.begin(16, 2);             // se inicializa el numero de columnas y filas de la pantalla
