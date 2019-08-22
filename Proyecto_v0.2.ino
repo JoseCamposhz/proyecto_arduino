@@ -1,3 +1,4 @@
+#include <Time.h>
 #include <LiquidCrystal.h>
 #include <SimpleDHT.h>
 
@@ -14,7 +15,7 @@ int value;                      // Variable que almacenará los valores del foto
 #define GREEN 5
 #define RED 6
 
-#define ENABLE 4
+int RELAY = 13;
 
 void setup() {
   lcd.begin(16, 2);             // se inicializa el numero de columnas y filas de la pantalla
@@ -23,8 +24,8 @@ void setup() {
   pinMode(RED, OUTPUT);         //Se definen los modos del pin
   pinMode(GREEN, OUTPUT);
   pinMode(BLUE, OUTPUT);
-  pinMode(ENABLE,OUTPUT);
-  digitalWrite(RED, HIGH);      //Se define el pin inicla 
+  pinMode(RELAY, OUTPUT);
+  digitalWrite(RED, HIGH);      //Se define el pin inicla
   digitalWrite(GREEN, LOW);
   digitalWrite(BLUE, LOW);
   Serial.begin(9600);
@@ -32,16 +33,16 @@ void setup() {
 }
 
 //definir variables para los cambios del led
-int redValue;       
+int redValue;
 int greenValue;
 int blueValue;
 
 void loop() {
-    // start working...
+  // start working...
 
-  byte temperature = 0;                 // Elementos que almacenarán la indormación entragada por 
+  byte temperature = 0;                 // Elementos que almacenarán la indormación entragada por
   byte humidity = 0;                    // el sensor, sin ser procesadas.
-  byte data[40] = {0};                  // Arreglo que contiene los datos entregados por el sensor 
+  byte data[40] = {0};                  // Arreglo que contiene los datos entregados por el sensor
 
   if (dht11.read(pinDHT11, &temperature, &humidity, data)) {
     Serial.println("DHT11 - error de lectura");
@@ -59,29 +60,28 @@ void loop() {
   value = analogRead(pResistor);
   Serial.print("Brillo ");
   Serial.println(value);        // Se mostrara el valor almacenado del fotoresistor
-  
+
   Serial.print("Sample OK: ");
   int temp = (int)temperature;
   int hum = (int)humidity;
   lcd.setCursor(0, 0);
-  lcd.print(String("Brillo: ")+String(value));
+  lcd.print(String("Brillo: ") + String(value));
   lcd.setCursor(0, 1); // Se inicia en el cursor en la columna 0 y fila 1
-  lcd.print(String("T:")+String(temp)+String("C - H:")+String(humidity)+String("%"));
-  #define delayTime 10  
+  lcd.print(String("T:") + String(temp) + String("C - H:") + String(humidity) + String("%"));
+#define delayTime 10
   redValue = 0;
   greenValue = 255;
   blueValue = 0;
-
-  digitalWrite(ENABLE, HIGH); // Giro para un lado  
+  digitalWrite(RELAY, LOW);
   // digitalWrite(ENABLE,LOW);
   if (int(value) <= 350) {
-        
+    digitalWrite(RELAY, HIGH); // Giro para un lado
     redValue = 255;
     greenValue = 0;
     analogWrite(RED, redValue);
     analogWrite(GREEN, greenValue);
   } else {
-    digitalWrite(ENABLE,LOW);
+
     greenValue = 255;
     redValue = 0;
     analogWrite(RED, redValue);
