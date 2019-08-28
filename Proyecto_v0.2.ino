@@ -1,4 +1,3 @@
-#include <Time.h>
 #include <LiquidCrystal.h>
 #include <SimpleDHT.h>
 
